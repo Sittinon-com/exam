@@ -1,0 +1,108 @@
+#include <stdio.h>
+
+// โครงสร้าง Node
+struct node {
+    int data;
+    struct node *next;
+    struct node *back;
+};
+
+// ฟังก์ชันสำหรับสลับ Node
+struct node* swapNodes(struct node* head, int a, int b) {
+    if (head == NULL || head->next == NULL) {
+        printf("Linkedlist ว่างหรือมีข้อมูลน้อยกว่า 2 ตัว ไม่สามารถสลับ Node ได้!\n");
+        return head;
+    }
+
+    struct node *curA = head, *curB = head;
+
+    // ค้นหา Node A และ B
+    while (curA != NULL && curA->data != a) {
+        curA = curA->next;
+    }
+
+    while (curB != NULL && curB->data != b) {
+        curB = curB->next;
+    }
+
+    // ตรวจสอบว่า Node A และ B อยู่ใน Linkedlist หรือไม่
+    if (curA == NULL || curB == NULL) {
+        printf("ไม่พบ Node A หรือ B ใน Linkedlist!\n");
+        return head;
+    }
+
+    // ทำการสลับ Node A และ B
+    struct node* tempBackA = curA->back;
+    struct node* tempNextA = curA->next;
+    struct node* tempBackB = curB->back;
+    struct node* tempNextB = curB->next;
+
+    // ปรับ next ของ Node A และ B
+    if (tempBackA != NULL) {
+        tempBackA->next = curB;
+    } else {
+        head = curB;
+    }
+    if (tempNextA != NULL) {
+        tempNextA->back = curB;
+    }
+
+    if (tempBackB != NULL) {
+        tempBackB->next = curA;
+    } else {
+        head = curA;
+    }
+    if (tempNextB != NULL) {
+        tempNextB->back = curA;
+    }
+
+    // ทำการปรับ back ของ Node A และ B
+    curA->back = tempBackB;
+    curA->next = tempNextB;
+    curB->back = tempBackA;
+    curB->next = tempNextA;
+
+    return head;
+}
+
+// ฟังก์ชันสำหรับพิมพ์ข้อมูลใน Linkedlist
+void printList(struct node* head) {
+    struct node* cur = head;
+
+    while (cur != NULL) {
+        printf("%d ", cur->data);
+        cur = cur->next;
+    }
+
+    printf("\n");
+}
+
+int main() {
+    // สร้าง Linkedlist 
+    struct node head = {8, NULL, NULL};
+    struct node node2 = {9, NULL, NULL};
+    struct node node3 = {3, NULL, NULL};
+    struct node node4 = {4, NULL, NULL};
+
+
+    head.next = &node2;
+    node2.back = &head;
+    node2.next = &node3;
+    node3.back = &node2;
+    node3.next = &node4;
+    node4.back = &node3;
+
+
+    // พิมพ์ข้อมูล Linkedlist ก่อนสลับ Node
+    printf("Linkedlist ก่อนสลับ Node: ");
+    printList(&head);
+
+    // สลับ Node A และ B
+    struct node* newHead = swapNodes(&head, 4, 9);
+
+    // พิมพ์ข้อมูล Linkedlist หลังสลับ Node
+    printf("Linkedlist หลังสลับ Node: ");
+    printList(newHead);
+
+    return 0;
+}// end funtion
